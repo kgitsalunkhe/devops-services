@@ -27,15 +27,26 @@ app.post("/add-sub", (req, res) => {
   const {a=0, b=0} = req.body;
   console.log(`A: ${a}, B: ${b}`);
 
-  //////////////////////////////////////
-  // Your logic to call S1 and S2 services to get the addition and subtraction
-  //////////////////////////////////////
+  var request = require('request');
+  var sum1 = 0;
+  request.post(
+      'http://localhost:8081/add',
+      { json: { 'a':a,'b':b } },
+      function (error, response, body) {
+        sum1 = body.body.sum;
+        res.status(200).send({
+          body: {
+            sum: sum1
+          }
+        });
+      }
+  );
 
 });
 
 /** 404 error */
 app.all("*", (req, res, next) => {
-  const err = new HttpException(404, "Endpoint Not Found");
+  const err = new HttpException(404, "Koustubh");
   return res.status(err.status).send(err.message);
 });
 
